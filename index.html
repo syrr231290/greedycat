@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏开始界面</title>
+    <style>
+        .volume-btn {
+            margin-top: -15px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", Arial, sans-serif;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('./assets/indexbackground.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+        .game-card {
+            width: 90%;
+            max-width: 600px;
+            padding: 35px 25px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            display: none;
+        }
+        .game-video {
+            width: 100%;
+            height: 600px;
+            border-radius: 12px;
+            margin-bottom: 5px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .start-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 126, 95, 0.4);
+        }
+        .start-btn:hover {
+            transform: scale(1.03);
+        }
+        /* 自定义弹窗核心样式 */
+        .custom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex; /* 页面加载时默认显示 */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            width: 90%;
+            max-width: 400px;
+            padding: 30px 20px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        /* 喵喵文字样式 */
+        .modal-meow-text {
+            font-size: 1.8rem;
+            color: #ff7e5f;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        /* 弹窗按钮通用样式 */
+        .modal-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+            margin: 8px 0;
+            width: 100%;
+        }
+        /* 翻译按钮样式 */
+        .translate-btn {
+            background: linear-gradient(90deg, #4ca1af, #2c3e50);
+            color: white;
+        }
+        /* 代言语按钮样式（初始隐藏） */
+        .speak-btn {
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            color: white;
+            display: none; /* 初始隐藏，点击翻译后显示 */
+            white-space: normal; /* 自动换行 */
+            line-height: 1.4;
+            padding: 15px;
+        }
+        /* 关闭按钮样式 */
+        .modal-close-btn {
+            background: #e0e0e0;
+            color: #333;
+            margin-top: 10px;
+        }
+        .modal-btn:hover {
+            transform: scale(1.03);
+        }
+        /* 响应式适配 */
+        @media (max-width: 400px) {
+            .game-card {
+                padding: 25px 20px;
+            }
+            .game-video {
+                height: 160px;
+            }
+            .modal-meow-text {
+                font-size: 1.5rem;
+            }
+            .modal-content {
+                padding: 25px 15px;
+            }
+            .modal-btn {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 主界面：初始隐藏 -->
+    <div class="game-card" id="gameCard">
+        <!-- 视频区域 -->
+        <video id="gameVideo" class="game-video" autoplay loop muted playsinline>
+            <source src="./assets/111.mp4" type="video/mp4">
+            你的浏览器不支持视频播放，请升级浏览器！
+        </video>
+        <!-- 音量控制按钮 -->
+        <button id="volumeBtn" class="volume-btn">🔇 开启声音</button>
+        <form action="./html/start.html" method="get">
+            <button type="submit" class="start-btn">开始游戏 </button>
+        </form>
+    </div>
+
+    <!-- 自定义弹窗：优先显示 -->
+    <div id="customModal" class="custom-modal">
+        <div class="modal-content">
+            <!-- 喵喵文字 -->
+            <p class="modal-meow-text">喵喵喵，喵喵喵喵，喵喵喵喵喵喵喵喵喵喵喵，喵喵喵喵喵喵喵喵喵喵，喵喵喵喵喵喵喵喵喵喵</p>
+            <!-- 翻译按钮 -->
+            <button id="translateBtn" class="modal-btn translate-btn">翻译喵语</button>
+            <!-- 代言语按钮（初始隐藏） -->
+            <button id="speakBtn" class="modal-btn speak-btn">大家好，我是桃福，我是nujupt李苑苑级巨星，我为贪吃喵小游戏代言，我证明这个真的很好玩</button>
+            <!-- 关闭弹窗按钮 -->
+            <button id="modalCloseBtn" class="modal-btn modal-close-btn">关闭弹窗</button>
+        </div>
+    </div>
+
+    <script>
+        // 核心元素获取
+        const gameCard = document.getElementById('gameCard'); // 主界面
+        const modal = document.getElementById('customModal'); // 弹窗
+        const translateBtn = document.getElementById('translateBtn');
+        const speakBtn = document.getElementById('speakBtn');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        // 音量控制相关
+        const video = document.getElementById('gameVideo');
+        const volumeBtn = document.getElementById('volumeBtn');
+
+        // 1. 翻译按钮逻辑：显示代言语按钮
+        translateBtn.addEventListener('click', () => {
+            speakBtn.style.display = 'block'; // 显示第二个按钮
+            translateBtn.style.opacity = '0.6'; // 翻译按钮置灰
+            translateBtn.disabled = true; // 防止重复点击
+        });
+
+        // 2. 关闭弹窗逻辑：隐藏弹窗 + 显示主界面
+        function closeModalAndShowMain() {
+            modal.style.display = 'none'; // 隐藏弹窗
+            gameCard.style.display = 'block'; // 显示主界面
+            // 触发视频播放（避免隐藏状态下视频加载异常）
+            video.play().catch(err => console.log('视频自动播放:', err));
+        }
+
+        // 关闭按钮点击
+        modalCloseBtn.addEventListener('click', closeModalAndShowMain);
+        // 点击弹窗背景也关闭
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModalAndShowMain();
+            }
+        });
+
+        // 3. 原有音量控制逻辑
+        volumeBtn.addEventListener('click', () => {
+            if (video.muted) {
+                video.muted = false; // 开启声音
+                volumeBtn.textContent = '🔊 关闭声音';
+            } else {
+                video.muted = true; // 关闭声音
+                volumeBtn.textContent = '🔇 开启声音';
+            }
+        });
+    </script>
+</body>
+</html>
