@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
         gridSize: 20,
         initialSpeed: 150,
         minSpeed: 80,
+        speedIncrement:5,
         initialSnakeLength: 1,
         //吃到好果和坏果的加减分数
         goodFoodScore: 5,
@@ -3155,4 +3156,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
         // 初始化游戏
         initGame();
+
 });
